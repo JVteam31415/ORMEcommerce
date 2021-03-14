@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
   // find all tags
   // be sure to include its associated Product data
   try {
-    const TagData = await Tag.findAll({
+    const TagData =  Tag.findAll({
       include: [{ model: Product }],
       include: [{ model: ProductTag }],
     });
@@ -21,7 +21,7 @@ router.get('/:id', (req, res) => {
   // find a single tag by its `id`
   // be sure to include its associated Product data
   try {
-    const TagData = await Tag.findByPk(req.params.id, {
+    const TagData =  Tag.findByPk(req.params.id, {
       include: [{ model: Product }],
       include: [{ model: ProductTag }],
     });
@@ -40,7 +40,7 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   // create a new tag
   try {
-    const locationData = await Tag.create({
+    const locationData =  Tag.create({
       tag_name: req.body.tag_name,
     });
     res.status(200).json(locationData);
@@ -56,7 +56,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   // delete on tag by its `id` value
   try {
-    const TagData = await Tag.destroy({
+    const TagData =  Tag.destroy({
       where: {
         id: req.params.id,
       },
