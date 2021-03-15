@@ -63,7 +63,7 @@ router.delete('/:id', (req, res) => {
     });
 
     if (!TagData) {
-      res.status(404).json({ message: 'No library card found with that id!' });
+      res.status(404).json({ message: 'No tag found with that id!' });
       return;
     }
 
