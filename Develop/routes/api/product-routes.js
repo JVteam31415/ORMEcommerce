@@ -4,11 +4,13 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
+  
+  console.log("finding all products")
   try {
-    const ProductData =  Product.findAll({
+    const ProductData =  await Product.findAll({
       include: [{ model: Category }],
       include: [{ model: Tag }],
     });
@@ -19,15 +21,18 @@ router.get('/', (req, res) => {
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+ router.get('/:id', async (req, res) => {
+  console.log("finding product by id")
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   try {
-    const ProductData =  Product.findByPk(req.params.id, {
-      include: [{ model: Category }],
-      include: [{ model: Tag }],
-    });
+    const ProductData = await Product.findByPk(
+      req.params.id, 
 
+        {include: [{model:Category},{ model: Tag, through: ProductTag }]}
+     
+    );
+    console.log(JSON.stringify(ProductData));
     if (!ProductData) {
       res.status(404).json({ message: 'No Product found with that id!' });
       return;
@@ -40,6 +45,8 @@ router.get('/:id', (req, res) => {
 });
 
 // create new product
+
+
 router.post('/', (req, res) => {
   /* req.body should look like this...
     {
@@ -49,7 +56,11 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  Product.create(req.body)
+  Product.create({
+    product_name: req.body.product_name,
+    price:req.body.price,
+    stock:req.body.stock
+  })
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
       if (req.body.tagIds.length) {
@@ -113,10 +124,10 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
   try {
-    const  ProductData =   Product.destroy({
+    const  ProductData =  await Product.destroy({
       where: {
         id: req.params.id,
       },
